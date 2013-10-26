@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/theme/moon.css" id="theme">
+    <link rel="stylesheet" href="css/theme/serif.css" id="theme">
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -45,11 +45,10 @@
 	</section>
 
         <section>
-          <h2>About me</h2>
+          <h2>Scope</h2>
           <ul>
-            <li>Live in Qingdao</li>
-            <li>Work for <a href="https://citrusbyte.com/">CitrusByte</a></li>
-            <li>Code anything but CSS</li>
+            <li>What I mentioned in the talk description</li>
+            <li>A secret announcement for Webruby</li>
           </ul>
         </section>
 
@@ -89,11 +88,11 @@
         </section>
 
         <section>
-          <a href="http://joshnuss.github.io/mruby-web-irb/">Web IRB</a>
+          <a href="/demos/irb/index.html">Web IRB</a>
         </section>
 
         <section>
-          <p>So, how does Webruby work?</p>
+          <p>So, how can I use webruby?</p>
         </section>
 
         <section>
@@ -113,7 +112,76 @@
         </section>
 
         <section>
+          <h4>Node.js code</h4>
+	  <pre><code data-trim>
+var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('RubyConfChina 2013 is awesome!');
+}).listen(1337);
+console.log('Server running at http://127.0.0.1:1337/');
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>Webruby code</h4>
+	  <pre><code data-trim>
+MrubyJs.global.require('http').createServer do |req, res|
+  res.writeHead(200, {'Content-Type' => 'text/plain'})
+  res.end("RubyConfChina 2013 is awesome!\n")
+end.listen(1337)
+MrubyJs.global.console.log('Server running at http://127.0.0.1:1337/')
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>Sinatra code(for comparison)</h4>
+	  <pre><code data-trim>
+require 'sinatra'
+
+get '/' do
+  'RubyConfChina 2013 is awesome!'
+end
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>Result using "ab -n 1000"(this is a joke!)</h4>
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Time per request(mean)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Webruby</td>
+                <td>1.718 ms</td>
+              </tr>
+              <tr>
+                <td>Node.js</td>
+                <td>0.241 ms</td>
+              </tr>
+              <tr>
+                <td>Ruby(sinatra)</td>
+                <td>0.890 ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
           <p>Okay, I've seen this, but what's inside webruby?</p>
+        </section>
+
+        <section>
+          <h2>mruby</h2>
+          <ul>
+            <li>Minimal Ruby implementation</li>
+            <li>Targets embedded devices</li>
+            <li>Highly modular</li>
+          </ul>
         </section>
 
         <section>
@@ -137,7 +205,7 @@
 
         <section>
           <h2>JS file size</h2>
-          <table>
+          <table style="width: 100%;">
             <thead>
               <tr>
                 <th>Version</th>
@@ -191,7 +259,105 @@
         <section>
           <h2>I strongly believe:</h2>
           <p>People should have the freedom to use whatever programming languages they enjoy on the browser!</p>
+          <p class="fragment" style="margin-top: 100px;">(The end of my original slides)</p>
         </section>
+
+        <section>
+          <h2>Announcement for Webruby</h2>
+        </section>
+
+        <section>
+          <a href="/demos/irb2/index.html">Demo</a>
+        </section>
+
+        <section>
+          <h2>Webruby now supports require!</h2>
+
+          <p class="fragment">How does this work?</p>
+        </section>
+
+        <section>
+          <h4>1: Loop through all Ruby files in the directory.</h4>
+	  <pre><code data-trim>
+tree app
+app
+├── another.rb
+├── app.rb
+└── foo
+    └── bar.rb
+
+1 directory, 3 files
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>2: Compile each Ruby file into C array of bytecodes</h4>
+	  <pre><code data-trim>
+const uint8_t another_irep[] = {
+0x52,0x49,0x54,0x45,0x30,0x30,0x30,0x31,0xf1,0x94,0x00,0x00,0x00,0xa6,0x4d,0x41,
+...
+const uint8_t app_irep[] = {
+0x52,0x49,0x54,0x45,0x30,0x30,0x30,0x31,0xbc,0x55,0x00,0x00,0x00,0x98,0x4d,0x41,
+...
+const uint8_t foo_bar_irep[] = {
+0x52,0x49,0x54,0x45,0x30,0x30,0x30,0x31,0xb5,0xea,0x00,0x00,0x00,0xa6,0x4d,0x41,
+...
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>3: Attach code for dynamically loading bytecode</h4>
+	  <pre><code data-trim>
+switch (idx) {
+  case 0:
+    result = mrb_load_irep(mrb, another_irep);
+    break;
+  case 1:
+    result = mrb_load_irep(mrb, app_irep);
+    break;
+  case 2:
+    result = mrb_load_irep(mrb, foo_bar_irep);
+    break;
+}
+	  </code></pre>
+        </section>
+
+        <section>
+          <h4>And the Ruby part!</h4>
+	  <pre><code data-trim>
+module Kernel
+  @@REQUIRED_MODULES = {
+    "another" => 0,
+    "app" => 1,
+    "foo/bar" => 2
+  }
+
+  def require(name)
+    return false unless @@REQUIRED_MODULES.include?(name)
+    require_internal(@@REQUIRED_MODULES[name])
+    @@REQUIRED_MODULES.delete(name)
+    true
+  end
+end
+	  </code></pre>
+        </section>
+
+        <section>
+          <h2>This could also work for native mruby!</h2>
+          <ul>
+            <li>The pre-processing result is just a single C file.</li>
+            <li>Only one setup function needed.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Limitation</h2>
+          <ul>
+            <li>Only works with a single directory(but can have countless sub-folders)</li>
+            <li>No require_relative support yet(adding soon!)</li>
+          </ul>
+        </section>
+
         <section>
           <h2>Thank you!</h2>
           <h2 style="margin-bottom: 100px;">Questions?</h2>

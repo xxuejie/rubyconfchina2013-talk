@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>irb</title>
+  <link href="css/screen.css" media="screen" rel="stylesheet" type="text/css" />
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery.simplemodal.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/webruby.js"></script>
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+</head>
+<body>
+  <script type="text/ruby">
+    def j(selector)
+      MrubyJs.window.jQuery(selector)
+    end
+
+    def w
+      MrubyJs.window
+    end
+  </script>
+  <a id="fork-me" href="https://github.com/joshnuss/mruby-web-irb"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  <div id="welcome">
+    <h1><img src="images/icon.png"/> interactive mruby</h1>
+    <hr/>
+    <p>
+      This is matz's <a href="https://github.com/mruby/mruby">mruby</a> interpreter running in your browser.
+    </p>
+    <p>
+      <a href="https://github.com/mruby/mruby">mruby</a> is written in C and normally compiles to x86 or ARM byte code. Here its been compiled to JavaScript, using <a href="http://llvm.org">llvm</a> and <a href="http://emscripten.org">emscripten</a>. The JavaScript produced is compatible with <a href="http://asmjs.org">asm.js</a>, which helps your browser's JavaScript VM run the code more efficiently.
+    </p>
+    <footer>
+      <div id="keyboard">
+        <h2>Keyboard</h2>
+        <hr/>
+        <ul>
+          <li><span>up</span> and <span>down</span> to navigate history</li>
+          <li><span>enter</span> to execute ruby code</li>
+          <li><span>shift</span> + <span>enter</span> to add new line</li>
+        </ul>
+      </div>
+      <div id="resources">
+        <h2>More Resources</h2>
+        <hr/>
+        <ul>
+          <li>See some <a href="#">examples</a></li>
+          <li>Learn about <a href="https://github.com/xxuejie/webruby">webruby</a></li>
+          <li>Check out the <a href="https://github.com/joshnuss/mruby-web-irb">code</a></li>
+          <li>Read <a href="http://qiezi.me">xxuejie's blog</a></li>
+        </ul>
+      </div>
+      <div id="attribution">
+        Special thanks to <a href='https://github.com/matz'>matz</a> for his work on <a href="https://github.com/mruby/mruby">mruby</a> and <a href="https://github.com/xxuejie">xxuejie</a> for his work on <a href="https://github.com/xxuejie/webruby">webruby</a>
+      </div>
+      <div id="action">
+        <a id="try-it-now">Try it Now</a>
+      </div>
+    </footer>
+  </div>
+  <div id="container">
+    <div id="shell">
+      <div id="output">
+      </div>
+      <div id="command">
+        <span class="prompt">&gt;&gt;</span>
+        <div id="editor"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40534862-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>
+
